@@ -1,6 +1,6 @@
 const yargs = require('yargs')
-const request = require('request')
 const geocode = require('./geocode/geocode')
+const weather = require('./weather/weather')
 
 const argv = yargs
     .options({
@@ -33,27 +33,15 @@ geocode.geocodeAddress(argv.address , (error, results) => {
         geolocation.longitude = String(results.longitude)
         console.log(JSON.stringify(results, undefined, 2))
 
-        request({
-            url: `https://api.darksky.net/forecast/${geolocation.key}/${geolocation.latitude},${geolocation.longitude}`,
-            json: true
-        }, (error, response, body) => {
+        //making an http request to darksky api for user's weather JSON data
+        weather.weatherRequest(geolocation.key, geolocation.latitude, geolocation.longitude, (error, result) => {
             if (error)
-                console.error('Difficulty connecting to DarkSky servers')
-            else if (body.code === 400)
-                console.error('The given location is invalid')
+                console.log(error)
             else{
-                console.log(body.currently.temperature)
+                console.log(result.currently.temperature)
             }
         })
     }
 })
-
-//retrieving weather for given address
-// request({
-//     url: `https://api.darksky.net/forecast/${geolocation.key}/${geolocation.latitude},${geolocation.longitude}`,
-//     json: true
-// }, (error, response, body) => {
-//     console.log(body)
-// })
 
 
