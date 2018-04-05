@@ -1,4 +1,3 @@
-const request = require('request')
 const yargs = require('yargs')
 const geocode = require('./geocode/geocode')
 
@@ -10,9 +9,17 @@ const argv = yargs
             describe: 'Address to fetch weather for',
             string: true
         }
-    }).help()
+    })
+    .help()
     .alias('help', 'h')
     .argv
 
 //make a request for the geocode of that address to google geocode api
-geocode.geocodeAddress(argv.address)
+geocode.geocodeAddress(argv.address , (error, results) => {
+    if (error){
+        console.log(error)
+    }
+    else{
+        console.log(JSON.stringify(results, undefined, 2))
+    }
+})

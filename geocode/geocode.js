@@ -1,25 +1,27 @@
 const request = require('request')
 
 //handles the callback for request()
-let geocodeAddressCallback = (error, response, body) => {
+let geocodeAddressCallback = (error, response, body, callback) => {
     //handling errors, if an invalid address is read then body.status is ZERO_RESULTS
     if (error)
-        console.error('Error connecting to Google servers')
+        callback('Error connecting to Google servers')
     else if (body.status === 'ZERO_RESULTS')
-        console.error('Unable to locate that address, please try a valid address')
+        callback('Unable to locate that address, please try a valid address')
     else if (body.status === 'OVER_QUERY_LIMIT')
-        console.error('Google servers say you are making too many queries. To solve this either wait or retrieve a google geocode api key.')
+        callback('Google servers say you are making too many queries. To solve this either wait or retrieve a google geocode api key.')
     else if (body.status === 'OK'){
         let geocode = body.results[0]
         let coordinates = geocode.geometry.location
 
-        console.log(`Address: ${geocode.formatted_address}`)
-        console.log(`Latitude: ${coordinates.lat}`)
-        console.log(`Longitude: ${coordinates.lng}`)
+        callback(undefined, {
+            address: geocode.formatted_address,
+            latitude: coordinates.lat,
+            longitude: coordinates.lng
+        })
     }
 }
 
-let geocodeAddress = (address) => {
+let geocodeAddress = (address, callback) => {
     
     //url encode the address for http request
     urlAddress = encodeURI(address)
@@ -28,7 +30,7 @@ let geocodeAddress = (address) => {
     request({
         url: `http://maps.googleapis.com/maps/api/geocode/json?address=${urlAddress}`,
         json: true
-    }, geocodeAddressCallback)
+    },(error, response, body)=> geocodeAddressCallback(error, response, body, callback))
 }
 
 module.exports = {
