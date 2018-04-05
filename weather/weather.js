@@ -1,6 +1,6 @@
 const request = require('request')
 
-
+//handler for the request callback
 let weatherRequestCallback = (error, response, body, callback) => {
     if (error)
         callback('Difficulty connecting to DarkSky servers')
@@ -12,8 +12,10 @@ let weatherRequestCallback = (error, response, body, callback) => {
 }
 
 
-let weatherRequest = (key, latitude, longitude, callback) => {
-   
+//darkSky api key
+let key = '5cc20ef634c8d2497e706301c44c0f5c'
+//wrapper for the http request to dark sky api
+let weatherRequest = (latitude, longitude, callback) => {
     request({
         url: `https://api.darksky.net/forecast/${key}/${latitude},${longitude}`,
         json: true

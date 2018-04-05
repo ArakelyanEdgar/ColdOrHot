@@ -16,9 +16,7 @@ const argv = yargs
     .argv
 
 //geolocation datastructre with darksky, the weather forecast, api key
-let key = '5cc20ef634c8d2497e706301c44c0f5c'
-geolocation = {
-    key, 
+geolocation = { 
     latitude: '',
     longitude: ''
 }
@@ -34,7 +32,7 @@ geocode.geocodeAddress(argv.address , (error, results) => {
         console.log(JSON.stringify(results, undefined, 2))
 
         //making an http request to darksky api for user's weather JSON data
-        weather.weatherRequest(geolocation.key, geolocation.latitude, geolocation.longitude, (error, result) => {
+        weather.weatherRequest(geolocation.latitude, geolocation.longitude, (error, result) => {
             if (error)
                 console.log(error)
             else{
