@@ -29,14 +29,14 @@ geocode.geocodeAddress(argv.address , (error, results) => {
     else{
         geolocation.latitude = String(results.latitude)
         geolocation.longitude = String(results.longitude)
-        console.log(JSON.stringify(results, undefined, 2))
+        console.log(results.address)
 
         //making an http request to darksky api for user's weather JSON data
-        weather.weatherRequest(geolocation.latitude, geolocation.longitude, (error, result) => {
+        weather.weatherRequest(geolocation.latitude, geolocation.longitude, (error, weatherResult) => {
             if (error)
                 console.log(error)
             else{
-                console.log(result.currently.temperature)
+                console.log(JSON.stringify(weatherResult.currently, undefined, 2))
             }
         })
     }
