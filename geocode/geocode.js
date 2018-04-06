@@ -1,5 +1,7 @@
 const request = require('request')
 
+let key = 'AIzaSyB7QKfaBk-ssxe5uECNYmc7zJYUFluYzfc'
+
 let geocodeAddress = (address) => {
     return new Promise((resolve, reject) => {
         //url encode the address like '1000 sesame street => 1000%sesame%street'
@@ -7,7 +9,7 @@ let geocodeAddress = (address) => {
 
         //making http request to geocode api
         request({
-            url: `http://maps.googleapis.com/maps/api/geocode/json?address=${urlAddress}`,
+            url: `https://maps.googleapis.com/maps/api/geocode/json?address=${urlAddress}&key=${key}`,
             json: true
         },(error, response, body)=> {
             if (error)
@@ -16,6 +18,11 @@ let geocodeAddress = (address) => {
                 reject('Unable to locate that address, please try a valid address')
             else if (body.status === 'OVER_QUERY_LIMIT')
                 reject('Google servers say you are making too many queries. To solve this either wait or retrieve a google geocode api key.')
+            else if (body.status === 'REQUEST_DENIED'){
+                //handling error case if API key is expired
+                let key = ''
+                return geocodeAddress(address)
+            }
             else if (body.status === 'OK'){
                 let geocode = body.results[0]
                 let coordinates = geocode.geometry.location
